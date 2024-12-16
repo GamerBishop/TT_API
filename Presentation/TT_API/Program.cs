@@ -1,6 +1,7 @@
 using Application.Extensions;
 using Domain.Model;
 using Infrastructure.Extensions;
+using Infrastructure.Seeders;
 using Serilog;
 using TT_API.Extensions;
 using TT_API.Middlewares;
@@ -35,6 +36,11 @@ namespace TT_API;
         builder.Services.AddSingleton(TimeProvider.System);
 
         var app = builder.Build();
+
+        // Seed the database
+        var scope = app.Services.CreateScope();
+        var seeder = scope.ServiceProvider.GetRequiredService<IProjectSeeder>();
+        seeder.Seed();
 
         // Configure the HTTP request pipeline.
         app.UseMiddleware<ErrorHandlingMiddleware>();

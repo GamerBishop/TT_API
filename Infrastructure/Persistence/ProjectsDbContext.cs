@@ -1,4 +1,5 @@
 ﻿using Domain.Model;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,26 @@ public class ProjectsDbContext(DbContextOptions<ProjectsDbContext> dbContextOpti
         builder.Entity<User>()
             .HasIndex(u => u.Email)
             .IsUnique();
+
+        builder.Entity<User>()
+            .HasMany(u => u.Roles)
+            .WithMany(r => r.Users)
+            .UsingEntity<IdentityUserRole<Guid>>(
+                j => j
+                    .HasOne<Role>()
+                    .WithMany()
+                    .HasForeignKey(ur => ur.RoleId)
+                    .IsRequired(),
+                j => j
+                    .HasOne<User>()
+                    .WithMany()
+                    .HasForeignKey(ur => ur.UserId)
+                    .IsRequired(),
+                j =>
+                {
+                    j.HasKey(ur => new { ur.UserId, ur.RoleId });
+                    j.ToTable("AspNetUserRoles");
+                });
 
         // Clé composite pour TeamMember
         builder.Entity<TeamMember>()

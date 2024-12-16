@@ -7,7 +7,7 @@ namespace Application.Services.AppServices
     {
         Task<bool> AddRole(Guid userId, string role);
         Task<Guid> AddUser(string userName, string email, string password, string role);
-        Task<bool> AssignProject(Guid userId, string projectId, string role);
+        Task<bool> AssignProject(Guid userId, int projectId, string role);
         Task<bool> UnassignRole(string userId, string role);
         Task<UserDto> GetUserByName(string userName);
         Task<UserDto> GetUserByEmail(string userMail);

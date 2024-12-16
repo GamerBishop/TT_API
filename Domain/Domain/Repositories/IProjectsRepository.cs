@@ -11,6 +11,13 @@ public interface IProjectsRepository
     Task<IEnumerable<Project>> GetAllAsync();
 
     /// <summary>
+    /// Retrieves all projects for a specific user asynchronously.
+    /// </summary>
+    /// <param name="userGuid">The GUID of the user whose projects are to be retrieved.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the collection of projects for the specified user.</returns>
+    Task<IEnumerable<Project>> GetAllFromUserAsync(Guid userGuid);
+
+    /// <summary>
     /// Retrieves a project by its ID asynchronously.
     /// </summary>
     /// <param name="id">The ID of the project to retrieve.</param>

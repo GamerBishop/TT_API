@@ -44,8 +44,21 @@ internal class ProjectRepository : IProjectsRepository
     /// <returns>A collection of all projects.</returns>
     public async Task<IEnumerable<Project>> GetAllAsync()
     {
-        return await _projectsDbContext.Projects.Include(p => p.TeamMembers).ToListAsync();
+        return await _projectsDbContext.Projects
+            .Include(p => p.TeamMembers)
+            .ThenInclude(tm => tm.User)
+            .ToListAsync();
     }
+
+    /// <summary>
+    /// Gets all projects asynchronously.
+    /// </summary>
+    /// <returns>A collection of all projects.</returns>
+    public async Task<IEnumerable<Project>> GetAllFromUserAsync(Guid userGuid)
+    {
+        return await _projectsDbContext.Projects.Include(p => p.TeamMembers).ThenInclude(tm => tm.User).Where(p => p.TeamMembers.Any(tm => tm.UserId == userGuid)).ToListAsync();
+    }
+
 
     /// <summary>
     /// Gets a project by its ID asynchronously.

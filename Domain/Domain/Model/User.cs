@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using System.Text.Json.Serialization;
 
 namespace Domain.Model;
 
@@ -21,7 +22,9 @@ public class User : IdentityUser<Guid>
     public List<Role> Roles { get; set; } = [];
 
     [NotMapped]
+    [JsonIgnore]
     public virtual ICollection<TeamMember> TeamMembers { get; set; } = [];
     [NotMapped]
+    [JsonIgnore]
     public virtual ICollection<Project> Projects { get; set; } = [];
 }

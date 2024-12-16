@@ -1,15 +1,19 @@
 ﻿using Application.Projects.DTOs;
+using Application.Users;
 using AutoMapper;
+using Domain.Exceptions;
+using Domain.Interfaces;
 using Domain.Model;
 using Domain.Repositories;
 using Microsoft.Extensions.Logging;
 namespace Application.Services.AppServices;
 
-internal class ProjectService(IProjectsRepository projectRepository, ILogger<ProjectService> logger, IMapper mapper) : IProjectService
+internal class ProjectService(IProjectsRepository projectRepository, ILogger<ProjectService> logger, IMapper mapper, IProjectAuthorizationService projectAuthorizationService, IUserContext userContext) : IProjectService
 {
     public async Task<int> CreateProject(CreateProjectDto projectDto)
     {
         logger.LogInformation("Creating project with name {ProjectName}", projectDto.Name);
+        projectDto.CreatedBy = Guid.Parse(userContext.GetCurrentUser().Id);
         var project = mapper.Map<Project>(projectDto);
         var projectId = await projectRepository.CreateAsync(project);
         logger.LogInformation("Created project with id {ProjectId}", projectId);
@@ -19,9 +23,20 @@ internal class ProjectService(IProjectsRepository projectRepository, ILogger<Pro
     public async Task<IEnumerable<ProjectDto>> GetAllProjects()
     {
         logger.LogInformation("Retrieving all projects");
-        var projects = await projectRepository.GetAllAsync();
+        CurrentUser currentUser = userContext.GetCurrentUser() ?? throw new ForbidException("No user connected/found.");
+        IEnumerable<Project> projects;
+        if (currentUser.IsAdministrator)
+        {
+            logger.LogInformation("User is an administrator");
+            projects = await projectRepository.GetAllAsync();
+        }
+        else
+        {
+            logger.LogInformation("User is not an administrator");
+            projects = await projectRepository.GetAllFromUserAsync(Guid.Parse(currentUser.Id));
+        }
         logger.LogInformation("Retrieved {ProjectCount} projects", projects.Count());
-
+         
         var projectsDtos = mapper.Map<IEnumerable<ProjectDto>>(projects);
 
         return projectsDtos;

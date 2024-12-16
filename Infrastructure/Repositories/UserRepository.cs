@@ -68,11 +68,11 @@ internal class UserRepository(ProjectsDbContext _projectsDbContext, UserManager<
     /// <param name="userId">The ID of the user.</param>
     /// <param name="projectId">The ID of the project.</param>
     /// <returns>True if the project was assigned successfully, otherwise false.</returns>
-    public async Task<bool> AssignProject(Guid userId, string projectId, string role)
+    public async Task<bool> AssignProject(Guid userId, int projectId, string role)
     {
         var user = await _projectsDbContext.Users.FindAsync(userId) ?? throw new NotFoundException("user", userId.ToString());
 
-        var project = await _projectsDbContext.Projects.FindAsync(int.Parse(projectId)) ?? throw new NotFoundException("project", projectId);
+        var project = await _projectsDbContext.Projects.FindAsync(projectId) ?? throw new NotFoundException("project", projectId.ToString());
 
         var roleEntity = await _projectsDbContext.Roles.FirstOrDefaultAsync(r => r.Name == role);
         if (roleEntity == null) {

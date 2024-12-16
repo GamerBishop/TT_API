@@ -64,7 +64,7 @@ public class UserService(IUserRepository _userRepository, IEmailSender<User> _em
     /// <param name="projectId">The ID of the project.</param>
     /// <param name="role">The role to assign in the project.</param>
     /// <returns>True if the project was assigned successfully, otherwise false.</returns>
-    public async Task<bool> AssignProject(Guid userId, string projectId, string role)
+    public async Task<bool> AssignProject(Guid userId, int projectId, string role)
     {
         _logger.LogInformation("Assigning project {ProjectId} to user with ID: {UserId} and role: {Role}", projectId, userId, role);
         return await _userRepository.AssignProject(userId, projectId, role);

@@ -11,5 +11,5 @@ public class CreateProjectDto
 
     public required DateTime StartDate { get; set; }
 
-    public User CreatedBy { get; set; } = default!;
+    public Guid CreatedBy { get; set; } = default!;
 }

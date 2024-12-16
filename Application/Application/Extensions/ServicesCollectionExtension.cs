@@ -2,6 +2,7 @@
 using Application.Services;
 using Application.Services.AppServices;
 using Application.Settings;
+using Application.Users;
 using Application.Users.Profiles;
 using AutoMapper;
 using AutoMapper.Internal;
@@ -27,17 +28,8 @@ public static class ServicesCollectionExtension
 
         services.AddAutoMapper(typeof(UserProfiles), typeof(ProjectProfiles));
 
+        services.AddScoped<IUserContext, UserContext>();
 
-        // Diagnostic pour vérifier les profils AutoMapper
-        var mapperConfiguration = new MapperConfiguration(cfg =>
-        {
-            cfg.AddMaps(applicationAssembly);
-        });
-
-        var mapper = mapperConfiguration.CreateMapper();
-        //var profiles = mappe
-        
-       // Console.WriteLine($"Nombre de profils chargés : {profiles.Length}");
-
+        services.AddHttpContextAccessor();
     }
 }

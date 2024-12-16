@@ -1,7 +1,10 @@
-﻿using Domain.Model;
+﻿using Domain.Interfaces;
+using Domain.Model;
 using Domain.Repositories;
+using Infrastructure.Authorization.Services;
 using Infrastructure.Persistence;
 using Infrastructure.Repositories;
+using Infrastructure.Seeders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,10 +18,11 @@ public static class ServiceCollectionExtensions
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         string connectionString;
-        if(IsRunningInDocker())
-           connectionString = configuration.GetConnectionString("DockerTest")!;
-        else
-            connectionString = configuration.GetConnectionString("TTWADB")!;
+        //if(IsRunningInDocker())
+        //   connectionString = configuration.GetConnectionString("DockerTest")!;
+        //else
+        //
+        connectionString = configuration.GetConnectionString("TTWADB")!;
         services.AddDbContext<ProjectsDbContext>(options => options.UseSqlServer(connectionString)
                 .EnableSensitiveDataLogging()); 
 
@@ -26,6 +30,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IProjectsRepository, ProjectRepository>();
+
+        services.AddScoped<IProjectSeeder, ProjectSeeder>();
 
         // Apply migrations at startup only if running in Docker
         if (IsRunningInDocker())
@@ -45,6 +51,8 @@ public static class ServiceCollectionExtensions
             .AddDefaultTokenProviders()
             .AddSignInManager()
             .AddUserManager<UserManager<User>>();
+
+        services.AddScoped<IProjectAuthorizationService, ProjectsAuthorizationSevice>();
     }
 
     private static bool IsRunningInDocker()
