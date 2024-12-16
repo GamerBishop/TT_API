@@ -30,11 +30,17 @@ internal class ProjectService(IProjectsRepository projectRepository, ILogger<Pro
             logger.LogInformation("User is an administrator");
             projects = await projectRepository.GetAllAsync();
         }
-        else
+        else if (currentUser != null)
         {
             logger.LogInformation("User is not an administrator");
             projects = await projectRepository.GetAllFromUserAsync(Guid.Parse(currentUser.Id));
         }
+        else
+        {
+            logger.LogWarning("User is not an administrator and no user is connected");
+            throw new ForbidException("No user connected/found.");
+        }
+
         logger.LogInformation("Retrieved {ProjectCount} projects", projects.Count());
          
         var projectsDtos = mapper.Map<IEnumerable<ProjectDto>>(projects);

@@ -2,6 +2,7 @@
 using Application.Users.DTOs;
 using Domain.Exceptions;
 using Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +15,7 @@ namespace TT_API.Controllers;
 /// <summary>
 /// Contrôleur pour la gestion de l'authentification.
 /// </summary>
+[Authorize]
 public class AuthController(IUserService userService, SignInManager<User> signInManager, IConfiguration configuration) : ControllerBase
 {
 
@@ -24,6 +26,7 @@ public class AuthController(IUserService userService, SignInManager<User> signIn
     /// <returns>Un message indiquant que l'utilisateur a été enregistré avec succès.</returns>
     /// <response code="200">Retourne un message de succès.</response>
     [HttpPost("register")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Register([FromBody] RegisterUserDto registerDto)
     {
         var user = new User { UserName = registerDto.UserName, Email = registerDto.Email };
@@ -40,6 +43,7 @@ public class AuthController(IUserService userService, SignInManager<User> signIn
     /// <response code="200">Retourne le token JWT.</response>
     /// <response code="401">Retourne une erreur si l'authentification échoue.</response>
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginUserDto loginDto)
     {
         var user = await userService.GetUserByEmail(loginDto.Email) ?? throw new NotFoundException("user", loginDto.Email);

@@ -10,7 +10,7 @@ namespace TT_API.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize()]
+    [Authorize]
     public class ProjectsController(IProjectService projectService, IUserService userService) : ControllerBase
     {
         /// <summary>
@@ -34,7 +34,7 @@ namespace TT_API.Controllers
         public async Task<IActionResult> CreateProject(CreateProjectDto createProjectDto)
         {
             int resultId = await projectService.CreateProject(createProjectDto);
-            return CreatedAtAction(nameof(GetById), new { resultId }, null);
+            return CreatedAtAction(nameof(GetById), new { id = resultId }, null);
         }
 
         /// <summary>
@@ -47,6 +47,7 @@ namespace TT_API.Controllers
         [Authorize(Roles = "Admin, Manager")]
         public async Task<IActionResult> UpdateProject([FromRoute] int id, UpdateProjectDto updateProjectDto)
         {
+            updateProjectDto.Id = id;
             await projectService.UpdateProject(updateProjectDto);
             return NoContent();
         }

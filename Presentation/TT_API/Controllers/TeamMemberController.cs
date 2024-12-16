@@ -10,7 +10,6 @@ namespace TT_API.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize()]
     public class TeamMemberController(IUserService userService) : ControllerBase
     {
         /// <summary>
@@ -22,7 +21,7 @@ namespace TT_API.Controllers
         /// <returns>Retourne un statut HTTP 200 si l'affectation est réussie.</returns>
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Manager)]
         [HttpPost("affect")]
-        public async Task<IActionResult> AffectUserToProject([FromRoute] Guid userId, [FromRoute] int projectId, [FromRoute] string Role)
+        public async Task<IActionResult> AffectUserToProject([FromQuery] Guid userId, [FromQuery] int projectId, [FromQuery] string Role)
         {
             await userService.AssignProject(userId, projectId, Role);
             return Ok();

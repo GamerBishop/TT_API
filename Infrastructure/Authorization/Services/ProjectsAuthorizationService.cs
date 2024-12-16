@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Authorization.Services
 {
-    public class ProjectsAuthorizationSevice(ILogger<ProjectsAuthorizationSevice> logger, IUserContext userContext) : IProjectAuthorizationService
+    public class ProjectsAuthorizationService(ILogger<ProjectsAuthorizationService> logger, IUserContext userContext) : IProjectAuthorizationService
     {
         public bool Authorize(Project project, ResourceOperation operation)
         {

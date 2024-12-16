@@ -52,7 +52,7 @@ public static class ServiceCollectionExtensions
             .AddSignInManager()
             .AddUserManager<UserManager<User>>();
 
-        services.AddScoped<IProjectAuthorizationService, ProjectsAuthorizationSevice>();
+        services.AddScoped<IProjectAuthorizationService, ProjectsAuthorizationService>();
     }
 
     private static bool IsRunningInDocker()
